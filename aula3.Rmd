@@ -1,0 +1,115 @@
+---
+title: "Aula 3"
+author: "Leonardo G Sanches"
+date: "2023-03-22"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+rm(list=ls(all=TRUE))
+```
+
+## Lista
+```{r}
+x = list(foo=1:4, bar=0.6)
+x
+x[1]
+x[2]
+x[[2]]
+# Transforma lista em vetor e acessa o valor
+x[[1]][2]
+```
+## Simulando Valores
+```{r}
+set.seed(143)
+x <- rnorm(20, 150, 20)
+y <- 100 + 5*x + rnorm(length(x), 0 , 20)
+x
+y
+```
+## Plottando
+```{r}
+plot(x,y)
+```
+## Sumario
+```{r}
+resultado <- summary(lm(y~x))
+resultado
+coef <- resultado$coefficients
+coef[1]
+coef[2]
+```
+## Estimativa
+
+```{r}
+coef[1] + coef[2]*x
+
+```
+## Verificando NA Númerico
+```{r}
+x1 = c(1,2,NA,4,NA,5)
+is.na(x1)
+ruim <- is.na(x1)
+x1[ruim]
+x1[!ruim] #Valores diferentes
+```
+## Verificando NA string
+```{r}
+y1 = c("a", "b", NA, "d", NA, "f")
+y1
+bom <- complete.cases(x1,y1)
+x1[bom]
+y1[bom]
+```
+## Diretorio do R
+```{r}
+getwd()
+path = "C:/Users/Leo/Documents"
+```
+## Importando Dados
+```{r}
+library(readxl)
+aula_1_dados <- read_excel("C:/Users/Leo/Documents/dados/aula_1_dados.xlsx")
+#View(aula_1_dados)
+#require(tidyr)
+```
+## Instalando Pacotes
+```{r}
+#install.packages("tidyr")
+read_excel("dados/aula_1_dados.xlsx") # Sheet = Busca Planilha do Excel
+```
+## Dataframe
+```{r}
+dados <- data.frame(aula_1_dados)
+dados
+```
+## Importando TXT
+```{r}
+dados2 = read.table("dados/dados2.txt", head=T, na.strings="--", dec=",")
+dados2
+```
+## Importanto CSV
+```{r}
+dados3 <- read.csv("dados/Batting.csv")
+dados3
+dados4 <- read.csv2("dados/Batting.csv", dec=",")
+dados4
+```
+## Manipulando Vetores
+```{r}
+dados["Sexo"]
+dados$Sexo
+dados[,1]
+attach(dados) #Transfoma o nome da coluna em variaveis
+Sexo
+detach(dados) #Limpa os vetores
+```
+## Wrangling
+```{r}
+dados[dados["Espécie"]=="Canina",]
+dados$Espécie <- as.factor(dados$Espécie)
+dados$Espécie
+#Buscando algumas infos
+dados[dados["Espécie"]=="Canina", c(1,2,5)]
+```
