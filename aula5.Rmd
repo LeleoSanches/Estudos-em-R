@@ -1,0 +1,53 @@
+---
+title: "Aula 5"
+author: "Leonardo G Sanches"
+date: "2023-03-27"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+require(readxl)
+install.packages("ggplot2")
+install.packages("RColorBrewer")
+library(ggplot2)
+library(RColorBrewer)
+```
+
+## Importando dados
+```{r}
+dados <- read_excel("dados/Respostas_Tabuladas_Gráficos_Tabelas_22Jun21.xlsx")
+
+dados$trajeto <- paste(dados$`ESTAÇÃO DE EMBARQUE:`, dados$`ESTAÇÃO DE DESEMBARQUE:`)
+dados$trajeto2 <- apply(dados[,c(11,15)], 1, paste, collapse = " - ")
+round(sort(table(dados$trajeto),decreasing = T))
+```
+```{r}
+sexo <- as.data.frame(round(table(dados$`1. SEXO`)/nrow(dados),2))
+sexo$ymax <- cumsum(sexo$Freq)
+sexo$ymin <- c(0, head(sexo$ymax, n=-1))
+sexo
+```
+## Plottando
+```{r}
+ggplot(as.data.frame(sexo), aes(ymax=ymax, ymin=ymin,xmax=4,xmin=3,fill=Var1)) +
+  geom_rect() +
+  #eom_text(x=1, aes(y=labelPosition, label=label,color=Var1)) +
+  scale_fill_brewer(10)+
+  scale_color_brewer(palette=10) +
+  coord_polar(theta="y")+
+  #lim(c(-1,5)+
+  theme_void()
+```
+## Bar plot
+```{r}
+barplot(table(dados$`ESTAÇÃO DE EMBARQUE:`), horiz=T)
+```
+```{r}
+embarque <- round(sort(table(dados$`ESTAÇÃO DE EMBARQUE:`)))
+ggplot(data=embarque[embarque$Freq>2.5,],aes(x=Freq, y=Var1)) 
+```
+
