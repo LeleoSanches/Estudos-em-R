@@ -1,0 +1,71 @@
+---
+title: "aula6"
+author: "Leonardo G Sanches"
+date: "2023-03-28"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+batting <- read.csv("dados/Batting.csv")
+salary <- read.csv("dados/Salaries.csv")
+library(ggplot2)
+
+library(dplyr)
+head(batting)
+dim(batting)
+```
+```{r}
+batting <- mutate(batting, AVG=H/AB)
+batting <- mutate(batting, X1B=H-X2B-X3B-HR)
+batting <- mutate(batting, SLG=(X1B+2*X2B+3*X3B+4*HR)/AB)
+batting <- mutate(batting, OBP=(H+BB+HBP)/(AB+BB+HBP+SF))
+combo <- merge(batting, salary, by= c("playerID", "yearID"))
+```
+
+
+```{r}
+tresfora <- filter(combo, playerID %in% c("giambja01","damonjo01","saenzol01"))
+tresfora
+```
+```{r}
+tresfora2 <- filter(tresfora, yearID==2001)
+tresfora2
+```
+### Jogadores ativos em 2001
+```{r}
+jogadores <- filter(combo, yearID==2001)
+jogadores
+```
+### Plottando
+```{r}
+ggplot(jogadores, aes(x=OBP, y=salary)) +
+ geom_point()
+```
+```{r}
+possiveljogadores <- filter(jogadores, salary<7000000, OBP>0,OBP<=0.5)
+possiveljogadores2 <- filter(possiveljogadores, AB >= 500)
+possiveljogadores
+```
+```{r}
+listafinal <- arrange(possiveljogadores2, desc(OBP), salary)
+listafinal2 <- select(listafinal,playerID, AB, OBP, salary)
+```
+
+
+```{r}
+ggplot(possiveljogadores2,aes(x=OBP, y=salary)) +
+ geom_point()
+```
+```{r}
+listafinal2
+```
+# Trabalhando com mapas
+```{r}
+#MAPALON = shapefile("dados/LIM_Bairros_V1.shp")
+#plot(MAPALON)
+```
+

@@ -1,0 +1,53 @@
+---
+title: "Atividade 2"
+author: "Leonardo G Sanches"
+date: "2023-03-28"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Atividade 2
+
+## Ex. 1
+Crie uma função para calcular o erro amostral.
+```{r}
+erro <- function(N=999999,nc=95,Pi=50,n,S=0){
+  n0 <- (N*n)/(N-n)
+  z <- qnorm(1-(1-nc/100)/2)
+  Pi = Pi/100
+  if(S==0){
+    erro = sqrt(z^2*Pi*(1-Pi)/n0)
+    
+  }
+  else{
+    erro = sqrt(z^2*S^2/n0)
+  }
+return(erro)}
+erro(S=18,n=400)
+```
+```{r}
+erro = 4
+nc = 95
+N = 15000
+#45% Masculino, 60% manhã, 40% noite
+#55% Feminino, 80% Manhã, 20% Noite
+G1 = 0.45; G2=0.55
+G1_1 = 0.60; G1_2=0.40
+G2_1=0.80; G2_2=0.20
+
+G11 = G1*G1_1; G12=G1*G1_2
+G21 = G2*G2_1; G22=G2*G2_1
+
+#Masculino Manhã
+N*G11
+#Masculino Noite
+N*G12
+#Feminino Manhã
+N*G21
+#Feminino Noite
+N*G22
+```
+
