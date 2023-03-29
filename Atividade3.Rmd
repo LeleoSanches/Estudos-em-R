@@ -1,0 +1,76 @@
+---
+title: "Atividade 3"
+output: html_document
+date: "2023-03-29"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## EX.  1
+Deseja-se realizar um passeio aleat ́orio em que existem duas possibilidades, dar um passo
+para frente ou um para tr ́as a partir de um ponto central de partida e sabendo que a
+probabilidade de cada dire ̧c ̃ao do passo  ́e igual. Crie um for para este caso e utilize 4
+d ́ıgitos como semente para padronizar o valores amostrados e indique a posi ̧c ̃ao em que
+se estar ́a para as seguintes situa ̧c ̃oes:
+```{r}
+PasseioAleatorio <- function(nPassos){
+  posicao_atual = 0
+  for (i in 1:nPassos){
+    set.seed(runif(1, min=1000, max=99999999))
+    direcao = sample(c(-1,1), size=1, replace = T)
+    posicao_atual = posicao_atual + direcao
+  }
+  return(posicao_atual)
+}
+```
+a) Ap ́os 25 passos
+```{r}
+PasseioAleatorio(25)
+```
+b) Ap ́os 150 passos
+```{r}
+PasseioAleatorio(150)
+```
+c) Ap ́os 1500 passos
+```{r}
+PasseioAleatorio(1500)
+```
+d) Ap ́os 534 passos
+```{r}
+PasseioAleatorio(534)
+```
+## EX. 2
+2) Crie uma fun ̧c ̃ao para encontrar o fatorial. n! = n × (n − 1) × (n − 2) × . . . × 3 × 2 × 1
+```{r}
+f <- function(n=0){
+  if (n==0) {
+    return(1)
+  }
+  else{
+    return(n * f(n-1))
+  }
+}
+```
+
+```{r}
+f(1)
+```
+
+```{r}
+f(0)
+```
+```{r}
+f(3)
+```
+```{r}
+f(5)
+```
+
+```{r}
+f(10)
+```
+```{r}
+f(100)
+```
+

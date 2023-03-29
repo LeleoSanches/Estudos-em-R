@@ -28,6 +28,9 @@ erro <- function(N=999999,nc=95,Pi=50,n,S=0){
 return(erro)}
 erro(S=18,n=400)
 ```
+
+## Ex. 2
+
 ```{r}
 erro = 4
 nc = 95
@@ -49,5 +52,106 @@ N*G12
 N*G21
 #Feminino Noite
 N*G22
+```
+## Ex. 3
+Determine o tamanho amostral para as seguintes situações:
+```{r}
+n <- function(nc=95,Pi=50,S=0,e=100){
+  z <- qnorm(1-(1-nc/100)/2)
+  Pi = Pi/100
+  e = e/100
+  if(S==0){
+    n = z^2*Pi*(1-Pi)/e^2
+    
+  }
+  else{
+    n = z^2*S^2/e^2
+  }
+return(n)}
+```
+
+Uma amostra com erro amostral de 2,5%, com nível de confiança de 99%, com uma incidência
+(π) de 55%.
+```{r}
+
+round(n(S=0,e=2.5,Pi=55, nc=99))
+
+```
+Uma amostra com erro amostral de 2,5%, com nível de confiança de 95%, com uma população
+de tamanho 2500.
+
+```{r}
+N = 2500
+e = 2.5
+e = e/100
+n = N /(1+N*e^2)
+round(n)
+```
+Considerando-se um nível de confiança de 95uma variância (S
+2
+) de 8Kg2
+e deseja-se um erro
+
+amostral de 0,4 kg, qual o tamanho da amostra necessário para a pesquisa?
+```{r}
+nc=95
+S=sqrt(8)
+e=0.4
+  z <- qnorm(1-(1-nc/100)/2)
+  n = z^2*S^2/e^2
+round(n)
+```
+Considerando-se um nível de confiança de 99uma variância (S
+2
+) de 9Kg2
+e deseja-se um erro
+
+amostral de 0,5 kg, qual o tamanho da amostra necessário para a pesquisa?
+```{r}
+nc=99
+S=sqrt(9)
+e=0.5
+  z <- qnorm(1-(1-nc/100)/2)
+  n = z^2*S^2/e^2
+round(n)
+```
+
+## EX. 4
+
+Diferentes levantamentos de dados foram realizados sem a definição prévia do erro amostral, porém
+é necessária essa informação para a divulgação adequada. Encontre qual o erro para cada uma das
+situaações abaixo.
+```{r}
+erro <- function(N=999999,nc=95,Pi=50,n,S=0){
+  n0 <- (N*n)/(N-n)
+  z <- qnorm(1-(1-nc/100)/2)
+  Pi = Pi/100
+  if(S==0){
+    erro = sqrt(z^2*Pi*(1-Pi)/n0)
+    
+  }
+  else{
+    erro = sqrt(z^2*S^2/n0)
+  }
+return(erro)}
+```
+a) n = 850, N = 60000, π = 0.45, nc = 95.
+```{r}
+erro(n=850, N=60000, Pi=45,nc=95)
+```
+
+b) n = 700, N = 40000, π = 0.45, nc = 99.
+```{r}
+erro(n=700, N=40000, Pi=45, nc=99)
+```
+
+c) n = 1200, N = 20000, S = 15, nc=95.
+```{r}
+erro(n=1200, N=20000, S=sqrt(15), nc=95)
+```
+
+d) n = 350, N = 15000, S = 50, nc=99.
+```{r}
+erro(n=350,N=15000, S=sqrt(50), nc=99)
 ```
 
