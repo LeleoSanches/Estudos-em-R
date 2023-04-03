@@ -1,0 +1,172 @@
+---
+title: "Atividade Final"
+author: "Leonardo G Sanches"
+date: "2023-04-03"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Atividade Final
+## Ex. 1
+Um sistema divide os clientes em quatro grupos diferentes para poder dar descontos
+progressivos seguindo a seguinte regra:
+ Para gastos at ́e R$ 250,00 n ̃ao tem desconto;
+ Para gastos de R$ 250,00 at ́e R$ 500,00 reais existe um desconto de 2,5%;
+ Para gastos de R$ 500,00 at ́e R$ 1000,00 reais existe um desconto de 5,0%;
+ Para gastos de R$ 1000,00 at ́e R$2000,00 reais existe um desconto de 7,5%;
+ Para gastos acima de R$ 2000,00 o desconto  ́e de 10,0%
+Com base nessas informa ̧c ̃oes crie uma fun ̧c ̃ao para saber o desconto e o valor final de
+uma compra para os seguintes valores:
+
+```{r}
+desconto <- function(x=0){
+  if(x<=250){
+    desconto = 0
+    print("Não tem desconto")
+  }
+  else if(x <= 500){
+    desconto = 0.025
+    print("Desconto de 2,5%")
+  }
+  else if (x <= 1000){
+    desconto = 0.05
+    print("Desconto de 5%")
+  }
+  else if (x<= 2000){
+    desconto = 0.075
+    print("Desconto de 7,5%")
+  }
+  else{
+    desconto = 0.1
+    print("Desconto de 10%")
+  }
+  valor_desconto = x*desconto
+  valor_final = x - valor_desconto
+  return(list(desconto = desconto, valor_final = valor_final))
+}
+```
+a) Compra de R$ 650,00
+```{r}
+desconto(x=650)
+```
+b) Compra de R$ 3650,00
+```{r}
+desconto(x=3650)
+```
+c) Compra de R$ 150,00
+```{r}
+desconto(x=150)
+```
+d) Compra de R$ 350,00
+```{r}
+desconto(x=350)
+```
+e) Compra de R$ 1330,00
+```{r}
+desconto(x=1330)
+```
+## Ex. 2
+Com base no conjunto de dados perfil cliente.csv retire uma amostra de tamanho 200
+e fa ̧ca uma an ́alise de regress ̃ao entre gasto e as demais vari ́aveis (exceto cod), uma por
+vez.
+```{r}
+data <- read.csv("perfil_cliente.csv")
+data1 <- sample(1:nrow(data), 200)
+data = data[data1,]
+data
+```
+```{r}
+modelo1 <- lm(data$gastos ~ data$renda, data=data)
+summary(modelo1)
+```
+```{r}
+modelo2 <- lm(data$gastos ~ data$idade, data=data)
+summary(modelo2)
+```
+```{r}
+modelo3 <- lm(data$gastos ~ data$tempo, data=data)
+summary(modelo3)
+```
+```{r}
+modelo4 <- lm(data$gastos ~ data$itens, data=data)
+summary(modelo4)
+```
+## Ex. 3
+Com base no conjunto de dados perfil cliente.csv classifique o os clientes com base nas
+seguintes condi ̧c ̃oes
+ Categoria A: Clientes com gastos de pelo menos R$ 1000,00 ;
+ Categoria B: Clientes com gastos de pelo menos R$ 750 at ́e R$ 1000,00 e com compra
+de pelo menos 4 itens;
+ Categoria C: Clientes com gastos de pelo menos R$ 750 at ́e R$ 1000,00 e com compra
+de menos de 4 itens ou clientes com gastos de pelo menos R$ 600,00 at ́e R$ 750,00
+e com renda de pelo menos R$ 3500,00;
+ Categoria D: Clientes com gastos de pelo menos R$ 600,00 at ́e R$ 750,00 e com
+renda abaixo de R$ 3500,00 ou clientes com gasto menores que R$ 600,00.
+```{r}
+data <- read.csv("perfil_cliente.csv")
+data$categoria <- ifelse(data$gastos >= 1000, "A",
+                            ifelse(data$gastos >= 750 & data$itens >= 4, "B",
+                                   ifelse(data$gastos >= 750 & data$itens < 4 | data$gastos >= 600 & data$renda >= 3500, "C",
+                                          ifelse(data$gastos >= 600 & data$renda < 3500 | data$gastos < 600, "D", NA))))
+
+library(ggplot2)
+ggplot(data, aes(x=data$categoria)) +
+  geom_bar(fill="steelblue")+
+  labs(title="Classificação dos clientes",
+       x = "Categoria",
+       y = "Numero de clientes")
+data$categoria
+```
+## Ex. 4
+Com base no conjunto de dados com as classifica ̧c ̃oes dos clientes rode o modelo de
+classifica ̧c ̃ao naiveBayes. Para isso utilize defina uma semente para gerar as amostras de
+treino e teste e uma semente para rodar o algoritmo e realize para os seguintes tamanhos
+treino.
+a) Utilizar um teste de tamanho 60%
+```{r}
+set.seed(2577)
+treino_index = sample(nrow(data), round(0.6*nrow(data)), replace = F)
+data_treino = data[treino_index,]
+data_teste = data[-treino_index,]
+data_treino
+data_teste
+```
+```{r}
+library(e1071)
+library(caret)
+modelo1 <- naiveBayes(data_treino$categoria ~ ., data=data_treino)
+predicao1 <- predict(modelo1, newdata=data_teste)
+mean(predicao1 == data_teste$categoria)
+```
+b) Utilizar um teste de tamanho 75%
+```{r}
+set.seed(9789)
+treino_index = sample(nrow(data), round(0.75*nrow(data)), replace = F)
+data_treino = data[treino_index,]
+data_teste = data[-treino_index,]
+data_treino
+data_teste
+```
+```{r}
+modelo2 <- naiveBayes(data_treino$categoria ~ ., data=data_treino)
+predicao2 <- predict(modelo1, newdata=data_teste)
+mean(predicao2 == data_teste$categoria)
+```
+c) Utilizar um teste de tamanho 80%
+```{r}
+set.seed(24556)
+treino_index = sample(nrow(data), round(0.80*nrow(data)), replace = F)
+data_treino = data[treino_index,]
+data_teste = data[-treino_index,]
+data_treino
+data_teste
+```
+```{r}
+modelo3 <- naiveBayes(data_treino$categoria ~ ., data=data_treino)
+predicao3 <- predict(modelo1, newdata=data_teste)
+mean(predicao3 == data_teste$categoria)
+```
+O Modelo 2 (85,3%) obteve um resultado um pouco melhor que os outros dois modelos (85% e 82,8%)

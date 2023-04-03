@@ -22,7 +22,7 @@ No conjunto de dados hw1 data.csv, quais s ̃ao os nomes das colunas do conjunto
 ```{r}
 library(readxl)
 
-data = read.csv("Documentos/Hub 2022/R/Estudos-em-R-main/hw1_data.csv")
+  data = read.csv("hw1_data.csv")
 colnames(data)
 ```
 ## Ex. 3

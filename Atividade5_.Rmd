@@ -1,0 +1,114 @@
+---
+title: "Atividade 5"
+author: "Leonardo G Sanches"
+date: "2023-03-31"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Atividade 5
+## Ex 1.
+retire uma amostra de tamanho 250 do conjunto de dados lista 3, utilizando seus  ́ultimos
+4 d ́ıgitos de matr ́ıcula e fa ̧ca as seguintes an ́alises:
+```{r}
+library(readxl)
+data <- read_excel("dados_lista_3.xlsx")
+data
+```
+```{r}
+set.seed(28988)
+data1 <- data[sample(nrow(data),250),]
+data1
+```
+Gr ́afico de barras para a vari ́avel esta ̧c ̃ao de embarque
+```{r}
+
+barplot(table(data1$`ESTAÇÃO DE EMBARQUE:`), 
+        main = "Estações de Embarque", # título principal
+        xlab = "Estação", # rótulo do eixo x
+        ylab = "Valores", # rótulo do eixo y
+        col = "blue", # cor das barras
+        border = "black", # cor da borda das barras
+        las = 1) # orientação dos rótulos no eixo x
+
+```
+Combine as informa ̧c ̃oes esta ̧c ̃ao de embarque e se far ́a integra ̧c ̃ao. Em seguida fa ̧ca
+um gr ́afico de barras para as 10 maiores porcentagens.
+```{r}
+data2 <-table(data1$`ESTAÇÃO DE EMBARQUE:`,data1$`FEZ INTEGRAÇÃO COM OUTRO MODAL DE TRANSPORTE COLETIVO?`)
+data2 <- sort(data2,decreasing = T)[1:10]
+barplot(data2)
+```
+Fa ̧ca o gr ́afico de barras para verificar a satisfa ̧c ̃ao com o tempo de espera de bilheteria.
+```{r}
+data4 <- table(data1$`1. TEMPO DE ESPERA PARA ATENDIMENTO NA BILHETERIA:`)
+barplot(data4, main = "Tempo de espera de bilheteria", xlab = "Satisfação", ylab = "Frequência")
+
+```
+
+## Ex. 2
+2) Com base no conjunto de dados dadosrenda.csv realize os seguinte procedimentos:
+```{r}
+data <- read.csv("dados_renda.csv", sep=";")
+data
+```
+Indique quantos indiv ́ıduos tem de cada gˆenero;
+```{r}
+genero <- table(data$Genero)
+genero
+```
+Indique quantos indiv ́ıduos tem entre 18 e 35 anos;
+```{r}
+data1 <- data[data$Idade >= 18 & data$Idade<=35,]
+table(data1$Idade)
+```
+Encontre qual a propor ̧c ̃ao de gastos em rela ̧c ̃ao `a renda
+```{r}
+
+data$Renda<- gsub(",", ".", data$Renda)
+data$Gasto <- gsub(",",".", data$Gasto)
+data$proporcao <- as.numeric(data$Gasto) / as.numeric(data$Renda)*100
+data$proporcao
+```
+Selecione as pessoas que gastem mais de 15% de sua renda, com base nesse sele ̧c ̃ao
+escolha as 5 pessoas com maior renda.
+```{r}
+data$Renda <- as.numeric(data$Renda)
+data$Gasto <- as.numeric(data$Gasto)
+
+data1<- data[data$proporcao > 15,]
+dados_ord <- data1[order(data1$Renda, decreasing = T),]
+dados_ord[1:5,]
+```
+As pessoas selecionadas no item anterior s ̃ao as pessoas que mais gastaram?
+```{r}
+data[order(data$Gasto, decreasing = T),]
+```
+### Resposta: Apenas 240 e 33 aparegem em ambas os dataframes
+
+Qual o gasto m ́edio dividido por gˆenero
+```{r}
+gasto_medio <- aggregate(data$Gasto ~ data$Genero, data = data, FUN = mean)
+gasto_medio
+```
+g) Divida as pessoas por idade da seguinte maneira: 18 a 25 anos; 26 a 35 anos; 36 a 50
+anos e acima de 50 anos. Em seguida fa ̧ca o gr ́afico de barras para as idades e encontre
+a renda e gastos de cada grupo. Pode-se dizer que algum grupo apresenta um maior
+gasto que os demais?
+```{r}
+data$grupo_idade <- cut(data$Idade, breaks = c(18, 26, 36, 51, Inf), 
+                         labels = c("18 a 25 anos", "26 a 35 anos", "36 a 50 anos", "mais de 50 anos"))
+data$grupo_idade
+```
+```{r}
+dados_por_idade <- aggregate(cbind(data$Renda, data$Gasto) ~ data$grupo_idade, data = data, FUN = mean)
+dados_por_idade
+```
+```{r}
+barplot(dados_por_idade$V2, names.arg = dados_por_idade$grupo_idade, 
+        xlab = "Grupo de idade", ylab = "Gasto médio")
+```
+### 26 à 35 anos tem mais gastos
